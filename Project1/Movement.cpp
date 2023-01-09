@@ -1,0 +1,17 @@
+#include <SFML/Graphics.hpp>
+#include "Movement.h"
+
+float calculateForce(sf::VertexArray& vertices)
+{
+	sf::Vector2f origin = vertices[0].position;
+	sf::Vector2f to = vertices[1].position;
+
+	float force = std::sqrt
+	(
+		std::pow(std::abs(to.y - origin.y), 2.f) + 
+		std::pow(std::abs(to.x - origin.x), 2.f)
+	);
+
+	return force;
+
+}
