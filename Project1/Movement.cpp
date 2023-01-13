@@ -15,3 +15,13 @@ float calculateForce(sf::VertexArray& vertices)
 	return force;
 
 }
+
+
+std::vector<float> getMovementVector(sf::VertexArray& vertices)
+{
+	sf::Vector2f origin = vertices[0].position;
+	sf::Vector2f to = vertices[1].position;
+
+	return std::vector<float> {to.x - origin.x, to.y - origin.y};
+
+}

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <thread>
 #include "Movement.h"
+#include "PlayerDrawables.h"
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -19,13 +20,70 @@ const float WINDOW_STANDARD_SIZE = 200.f;
 float windowCurrSize = WINDOW_STANDARD_SIZE;
 float windowScale = 1.f;
 
-//PlayerLine
+//PlayerLine && Box
 sf::Vector2i mouseStart = sf::Vector2i(0, 0);
 sf::VertexArray points(sf::Lines, 2);
+sf::VertexArray box(sf::LineStrip, 5);
+bool leftDown = false;
+bool rightDown = false;
 
 
-bool updateGame(sf::Clock& clock)
+//Movement
+std::vector<float> forceVector{ 0.f, 0.f };
+bool updateForce = false;
+float speedModifier = 1.f; //Player may be able to change this later
+
+
+
+
+
+
+bool updateGame(sf::RenderWindow& window, sf::Clock& clock)
 {
+	float radius = playerShape.getRadius();
+	
+
+	//Update force
+	if (updateForce)
+	{
+		forceVector = getMovementVector(points);
+		std::cout << "X Force:  " << forceVector[0] << std::endl;
+		std::cout << "Y Force:  " << forceVector[1] << std::endl;
+	}
+
+	//Check if ball is out of bounds
+	if (playerShape.getPosition().x + radius >= WINDOW_STANDARD_SIZE) //Ball has gone too far right
+	{
+		forceVector[0] = std::abs(forceVector[0]) * -1.f;
+	}
+	else if (playerShape.getPosition().x - radius <= 0) //Ball has gone too far left
+	{
+		forceVector[0] = std::abs(forceVector[0]);
+	}
+	else if (playerShape.getPosition().y + radius >= WINDOW_STANDARD_SIZE) //Ball has gone too far down
+	{
+		forceVector[1] = std::abs(forceVector[1]) * -1.f;
+	}
+	else if(playerShape.getPosition().y - radius <= 0) //Ball has gone too far up
+	{
+		//Inverse x force
+		forceVector[1] = std::abs(forceVector[1]);
+	}
+
+	//Check if ball has collided with a spawned entity
+
+	
+	sf::Vector2f newPos{
+			playerShape.getPosition().x + (speedModifier * forceVector[0] * clock.getElapsedTime().asSeconds()),
+			playerShape.getPosition().y + (speedModifier * forceVector[1] * clock.getElapsedTime().asSeconds())
+	};
+	playerShape.setPosition(newPos);
+	updateForce = false;
+	
+
+	return true;
+
+	/*
 	if (clock.getElapsedTime().asSeconds() >= 1.f)
 	{
 
@@ -33,6 +91,7 @@ bool updateGame(sf::Clock& clock)
 		return true;
 	}
 	return false;
+	*/
 }
 
 void resizeWindow(sf::RenderWindow& window)
@@ -58,19 +117,6 @@ void resizeWindow(sf::RenderWindow& window)
 }
 
 
-void timeSurprise(float duration)
-{
-	sf::Clock timer;
-
-	while (true)
-	{
-		if (timer.getElapsedTime().asSeconds() >= duration)
-		{
-			std::cout << "Surprise!!!!" << std::endl;
-			break;
-		}
-	}
-}
 
 sf::VertexArray getPlayerLineVertices(sf::RenderWindow& window)
 {
@@ -81,8 +127,27 @@ sf::VertexArray getPlayerLineVertices(sf::RenderWindow& window)
 	points[1].color = sf::Color::Red;
 
 	return points;
-	
+
 }
+
+sf::VertexArray getPlayerBoxVertices(sf::RenderWindow& window)
+{
+
+	box[0].position = window.mapPixelToCoords(mouseStart);														//upper left
+	box[1].position = window.mapPixelToCoords(sf::Vector2i(sf::Mouse::getPosition(window).x, mouseStart.y));	//upper right
+	box[2].position = window.mapPixelToCoords(sf::Mouse::getPosition(window));									//lower right
+	box[3].position = window.mapPixelToCoords(sf::Vector2i(mouseStart.x, sf::Mouse::getPosition(window).y));	//lower left														
+	box[4].position = window.mapPixelToCoords(mouseStart);														//Last Connection
+	
+	for (int i = 0; i < box.getVertexCount(); i++)
+	{
+		box[i].color = sf::Color::Blue;
+	}
+
+	return box;
+}
+
+
 
 
 int main()
@@ -99,7 +164,7 @@ int main()
 	float sec = t3.asSeconds();
 
 	sf::Clock clock;
-	std::thread timedFunc(timeSurprise, 5.f);
+	//std::thread timedFunc(timeSurprise, 5.f);
 
 
 	sf::Font font1;
@@ -126,7 +191,7 @@ int main()
 	while (window.isOpen())
 	{
 		sf::Event event;
-		if (updateGame(clock))
+		if (updateGame(window, clock))
 		{
 			clock.restart();
 		}
@@ -165,23 +230,49 @@ int main()
 			}
 			case sf::Event::MouseButtonPressed:
 			{
-				if (event.mouseButton.button == sf::Mouse::Left)
+				if (!rightDown && event.mouseButton.button == sf::Mouse::Left)
 				{
 					std::cout << "Clicked at  ";
 					std::cout << "x: " << event.mouseButton.x << " y: " << event.mouseButton.y << std::endl;
 					mouseStart = sf::Vector2i(event.mouseButton.x, event.mouseButton.y);
+
+					//Set control booleans
 					mousePressed = true;
+					leftDown = true;
+					break;
+				}
+				else if (!leftDown && event.mouseButton.button == sf::Mouse::Right)
+				{
+					std::cout << "Right button down " << std::endl;
+					mouseStart = sf::Vector2i(event.mouseButton.x, event.mouseButton.y);
+
+					//Set Control booleans
+					rightDown = true;
 					break;
 				}
 			}
 			case sf::Event::MouseButtonReleased:
 			{
-				if (event.mouseButton.button == sf::Mouse::Left)
+				if (event.mouseButton.button == sf::Mouse::Left && leftDown)
 				{
 					std::cout << "Released at: ";
 					std::cout << "x: " << event.mouseButton.x << " y: " << event.mouseButton.y << std::endl;
-					std::cout << "Resulting Force: " << calculateForce(points) << std::endl;
+					
+					updateForce = true;
+
+					//Set control booleans
 					mousePressed = false;
+					leftDown = false;
+					break;
+
+				}
+				else if (rightDown && event.mouseButton.button == sf::Mouse::Right)
+				{
+					std::cout << "Right button released " << std::endl;
+					createObstacleVertexArray(box);
+
+					//Set Control booleans
+					rightDown = false;
 					break;
 				}
 			}
@@ -189,18 +280,35 @@ int main()
 			}
 		}
 
-
+		
 
 		window.clear();
 
+		
 		//Draw all necessary stuff
-		window.draw(playerShape);
 
+		if (getObstacleListSize() != 0) //Draw Obstacles
+		{
+			int oSize = getObstacleListSize();
+			for (int i = 0; i < oSize; i++)
+			{
+				window.draw(getObstacle(i));
+			}
+		}
 
-		if (mousePressed)
+		
+		window.draw(playerShape); //Draw Player
+
+		if (leftDown) //Left Mouse Functionality
 		{
 			window.draw(getPlayerLineVertices(window));
 		}
+		if (rightDown) //Right Mouse Functionality
+		{
+			window.draw(getPlayerBoxVertices(window));
+		}
+
+		
 		
 		
 		window.draw(title);
