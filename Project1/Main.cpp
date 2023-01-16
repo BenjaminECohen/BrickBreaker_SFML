@@ -71,6 +71,22 @@ bool updateGame(sf::RenderWindow& window, sf::Clock& clock)
 	}
 
 	//Check if ball has collided with a spawned entity
+	if (checkObstacleOverlap(playerShape.getPosition(), playerShape.getRadius()) == 1) //Rightmost bound
+	{
+		forceVector[0] = std::abs(forceVector[0]);
+	}
+	else if (checkObstacleOverlap(playerShape.getPosition(), playerShape.getRadius()) == 2) //Leftmost bound
+	{
+		forceVector[0] = std::abs(forceVector[0]) * -1.f;
+	}
+	else if (checkObstacleOverlap(playerShape.getPosition(), playerShape.getRadius()) == 3) //Upper bound
+	{
+		forceVector[1] = std::abs(forceVector[1]) * -1.f;
+	}
+	else if (checkObstacleOverlap(playerShape.getPosition(), playerShape.getRadius()) == 4) //Downmost bound
+	{
+		forceVector[1] = std::abs(forceVector[1]);
+	}
 
 	
 	sf::Vector2f newPos{
@@ -244,6 +260,7 @@ int main()
 				else if (!leftDown && event.mouseButton.button == sf::Mouse::Right)
 				{
 					std::cout << "Right button down " << std::endl;
+					std::cout << "x: " << event.mouseButton.x << " y: " << event.mouseButton.y << std::endl;
 					mouseStart = sf::Vector2i(event.mouseButton.x, event.mouseButton.y);
 
 					//Set Control booleans
@@ -268,7 +285,8 @@ int main()
 				}
 				else if (rightDown && event.mouseButton.button == sf::Mouse::Right)
 				{
-					std::cout << "Right button released " << std::endl;
+					std::cout << "Released at: ";
+					std::cout << "x: " << event.mouseButton.x << " y: " << event.mouseButton.y << std::endl;
 					createObstacleVertexArray(box);
 
 					//Set Control booleans

@@ -1,18 +1,23 @@
 ﻿  Main.cpp
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(102,35): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(102,35): warning C4244:         with
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(102,35): warning C4244:         [
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(102,35): warning C4244:             T=unsigned int
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(102,35): warning C4244:         ]
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(108,39): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(108,39): warning C4244:         with
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(108,39): warning C4244:         [
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(108,39): warning C4244:             T=unsigned int
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(108,39): warning C4244:         ]
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(108,23): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(108,23): warning C4244:         with
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(108,23): warning C4244:         [
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(108,23): warning C4244:             T=unsigned int
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(108,23): warning C4244:         ]
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(142,20): warning C4018: '<': signed/unsigned mismatch
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(118,35): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(118,35): warning C4244:         with
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(118,35): warning C4244:         [
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(118,35): warning C4244:             T=unsigned int
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(118,35): warning C4244:         ]
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(124,39): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(124,39): warning C4244:         with
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(124,39): warning C4244:         [
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(124,39): warning C4244:             T=unsigned int
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(124,39): warning C4244:         ]
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(124,23): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(124,23): warning C4244:         with
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(124,23): warning C4244:         [
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(124,23): warning C4244:             T=unsigned int
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(124,23): warning C4244:         ]
+  PlayerDrawables.cpp
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(158,20): warning C4018: '<': signed/unsigned mismatch
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\PlayerDrawables.cpp(14,20): warning C4018: '<': signed/unsigned mismatch
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\PlayerDrawables.cpp(63,20): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\PlayerDrawables.cpp(82,12): warning C4018: '>=': signed/unsigned mismatch
   Project1.vcxproj -> D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Debug\Project1.exe
