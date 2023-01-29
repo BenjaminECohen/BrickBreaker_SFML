@@ -1,9 +1,19 @@
 #pragma once
 
 
-int checkObstacleOverlap(sf::Vector2f position, float radius);
+enum CollisionSide
+{
+	None = 0,
+	Top = 1,
+	Bottom = 2,
+	Right = 3,
+	Left = 4
+};
 
-void createObstacleVertexArray(sf::VertexArray box);
+CollisionSide checkObstacleOverlap(sf::Vector2f position, float radius);
+
+
+sf::VertexArray createObstacleVertexArray(sf::VertexArray box);
 
 int getObstacleListSize();
 

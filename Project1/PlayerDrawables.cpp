@@ -6,57 +6,62 @@
 std::vector<sf::VertexArray> obstacles = std::vector<sf::VertexArray>();
 
 
-int checkObstacleOverlap(sf::Vector2f position, float radius)
+CollisionSide checkObstacleOverlap(sf::Vector2f position, float radius)
 {
 
 	
 
 	for (int i = 0; i < obstacles.size(); i++)
 	{
-		if (position.x + radius >= obstacles[i][0].position.x && position.x - radius <= obstacles[i][1].position.x) // Left and Right
+		int collideCount = 0;
+		if (position.x + radius >= obstacles[i][0].position.x) // Left
 		{
-			if (position.y >= obstacles[i][0].position.y && position.y <= obstacles[i][3].position.y) //up then down
-			{
-				if (std::abs(position.x - obstacles[i][0].position.x) < std::abs(position.x - obstacles[i][1].position.x))
-				{
-					std::cout << "OVERLAP Left" << std::endl;
-					return 2;
-				}
-				else
-				{
-					
-					std::cout << "OVERLAP Right" << std::endl;
-					return 1;
-				}
-
-				
-			}
+			collideCount++;
 		}
-		if (position.y >= obstacles[i][0].position.y && position.y <= obstacles[i][3].position.y) //up and down
+		if (position.x - radius <= obstacles[i][1].position.x) //Right 
 		{
-			if (position.x + radius >= obstacles[i][0].position.x && position.x - radius <= obstacles[i][1].position.x) //Left then Right
-			{
-				if (std::abs(position.y - obstacles[i][0].position.y) < std::abs(position.y - obstacles[i][3].position.y))
-				{
-					std::cout << "OVERLAP Up" << std::endl;
-					return 3;
-				}
-				else
-				{
+			collideCount++;
+		}
+		if (position.y + radius >= obstacles[i][0].position.y) //Top
+		{
+			collideCount++;
+		}
+		if (position.y - radius <= obstacles[i][3].position.y) //Bottom
+		{
+			collideCount++;
+		}
 
-					std::cout << "OVERLAP Down" << std::endl;
-					return 4;
-				}
+		if (collideCount >= 4)
+		{
+			//Always starts with left
+			int LastLowest = std::abs(position.x + radius - obstacles[i][0].position.x);
+			CollisionSide closestSide = Left;
+			
+			if (std::abs(position.x - radius - obstacles[i][1].position.x) < LastLowest) // Check Right
+			{
+				LastLowest = std::abs(position.x - radius - obstacles[i][1].position.x);
+				closestSide = Right;
 			}
+			if (std::abs(position.y + radius - obstacles[i][0].position.y) < LastLowest) // Check Top
+			{
+				LastLowest = std::abs(position.y + radius - obstacles[i][0].position.y);
+				closestSide = Top;
+			}
+			if (std::abs(position.y - radius - obstacles[i][3].position.y) < LastLowest) // Check Bottom
+			{
+				LastLowest = std::abs(position.y - radius - obstacles[i][3].position.y);
+				closestSide = Bottom;
+			}
+			return closestSide;
 		}
 
 	}
 
-	return 0;
+	return None;
 }
 
 
-void createObstacleVertexArray(sf::VertexArray box)
+sf::VertexArray createObstacleVertexArray(sf::VertexArray box)
 {
 	sf::VertexArray obstacle(sf::Quads, 4);
 	
@@ -67,6 +72,7 @@ void createObstacleVertexArray(sf::VertexArray box)
 	}
 
 	obstacles.push_back(obstacle);
+	return obstacle;
 
 };
 

@@ -35,7 +35,35 @@ float speedModifier = 1.f; //Player may be able to change this later
 
 
 
+/*
+void RectColliderDetection(sf::CircleShape& player, sf::VertexArray rect)
+{
+	float rectTop = rect[0].position.y;
+	float rectBot = rect[3].position.y;
+	float rectRight = rect[1].position.x;
+	float rectLeft = rect[0].position.x;
 
+	while (true)
+	{
+
+		//Check Bottom
+		if (lineDistance(player.getPosition().y, rectBot, false) <= 0)
+		{
+
+		}
+		//Check Top
+		
+	}
+}*/
+
+float lineDistance(float player, float obstacle, bool absoluteValue)
+{
+	if (absoluteValue)
+	{
+		return std::abs(player - obstacle);
+	}
+	return player - obstacle;
+}
 
 
 bool updateGame(sf::RenderWindow& window, sf::Clock& clock)
@@ -71,19 +99,19 @@ bool updateGame(sf::RenderWindow& window, sf::Clock& clock)
 	}
 
 	//Check if ball has collided with a spawned entity
-	if (checkObstacleOverlap(playerShape.getPosition(), playerShape.getRadius()) == 1) //Rightmost bound
+	if (checkObstacleOverlap(playerShape.getPosition(), playerShape.getRadius()) == Right) //Rightmost bound
 	{
 		forceVector[0] = std::abs(forceVector[0]);
 	}
-	else if (checkObstacleOverlap(playerShape.getPosition(), playerShape.getRadius()) == 2) //Leftmost bound
+	else if (checkObstacleOverlap(playerShape.getPosition(), playerShape.getRadius()) == Left) //Leftmost bound
 	{
 		forceVector[0] = std::abs(forceVector[0]) * -1.f;
 	}
-	else if (checkObstacleOverlap(playerShape.getPosition(), playerShape.getRadius()) == 3) //Upper bound
+	else if (checkObstacleOverlap(playerShape.getPosition(), playerShape.getRadius()) == Top) //Upper bound
 	{
 		forceVector[1] = std::abs(forceVector[1]) * -1.f;
 	}
-	else if (checkObstacleOverlap(playerShape.getPosition(), playerShape.getRadius()) == 4) //Downmost bound
+	else if (checkObstacleOverlap(playerShape.getPosition(), playerShape.getRadius()) == Bottom) //Downmost bound
 	{
 		forceVector[1] = std::abs(forceVector[1]);
 	}
