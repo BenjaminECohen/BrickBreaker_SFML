@@ -32,7 +32,7 @@ bool rightDown = false;
 std::vector<float> forceVector{ 0.f, 0.f };
 bool updateForce = false;
 float speedModifier = 1.f; //Player may be able to change this later
-float frictionModifier = 0.0f;
+float frictionModifier = 0.4f;
 
 
 
@@ -135,19 +135,9 @@ bool updateGame(sf::RenderWindow& window, sf::Clock& clock)
 	};
 	playerShape.setPosition(newPos);
 	updateForce = false;
-	
 
 	return true;
 
-	/*
-	if (clock.getElapsedTime().asSeconds() >= 1.f)
-	{
-
-		std::cout << "Restarting: " << clock.getElapsedTime().asSeconds() << std::endl;
-		return true;
-	}
-	return false;
-	*/
 }
 
 void resizeWindow(sf::RenderWindow& window)
@@ -238,7 +228,7 @@ int main()
 	title.setStyle(sf::Text::Bold);
 
 	//Set player shape params
-	playerShape.setOrigin(playerShape.getRadius() / 2.f, playerShape.getRadius() / 2.f);
+	playerShape.setOrigin(playerShape.getRadius(), playerShape.getRadius());
 	playerShape.setPosition(window.getSize().y / 2.f, window.getSize().y / 2.f);
 
 
@@ -343,7 +333,11 @@ int main()
 		window.clear();
 
 		
+
+
 		//Draw all necessary stuff
+
+		window.draw(playerShape); //Draw Player
 
 		if (getObstacleListSize() != 0) //Draw Obstacles
 		{
@@ -355,7 +349,7 @@ int main()
 		}
 
 		
-		window.draw(playerShape); //Draw Player
+		
 
 		if (leftDown) //Left Mouse Functionality
 		{
