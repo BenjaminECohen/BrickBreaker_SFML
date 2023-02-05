@@ -32,6 +32,7 @@ bool rightDown = false;
 std::vector<float> forceVector{ 0.f, 0.f };
 bool updateForce = false;
 float speedModifier = 1.f; //Player may be able to change this later
+float frictionModifier = 0.0f;
 
 
 
@@ -116,7 +117,18 @@ bool updateGame(sf::RenderWindow& window, sf::Clock& clock)
 		forceVector[1] = std::abs(forceVector[1]);
 	}
 
-	
+	//Force Vector + Friction
+	forceVector[0] += forceVector[0] * -1.f * frictionModifier * clock.getElapsedTime().asSeconds();
+	forceVector[1] += forceVector[1] * -1.f * frictionModifier* clock.getElapsedTime().asSeconds();
+
+	if (std::abs(forceVector[0]) <= 0.1f && std::abs(forceVector[1]) <= 0.1f) //Once low enough, round to zero
+	{
+		//std::cout << "Round to zero" << std::endl;
+		forceVector[0] = 0.f;
+		forceVector[1] = 0.f;
+	}
+
+	//Determine new position of player
 	sf::Vector2f newPos{
 			playerShape.getPosition().x + (speedModifier * forceVector[0] * clock.getElapsedTime().asSeconds()),
 			playerShape.getPosition().y + (speedModifier * forceVector[1] * clock.getElapsedTime().asSeconds())
