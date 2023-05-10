@@ -4,6 +4,8 @@
 #include <thread>
 #include "Movement.h"
 #include "PlayerDrawables.h"
+#include "Block.h"
+#include "PlayerBlock.h"
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -13,15 +15,33 @@
 
 
 
-//PlayerShape
-sf::CircleShape playerShape(10.f);
+//PlayerShape = Ball
+sf::CircleShape ball(10.f);
+PlayerBlock player;
 
-const float WINDOW_STANDARD_SIZE = 200.f;
-float windowCurrSize = WINDOW_STANDARD_SIZE;
+
+const float WINDOW_STANDARD_HEIGHT = 600.f;
+
+float WINDOW_STANDARD_WIDTH = 400.f;
+float BREAK_ZONE_MAX_HEIGHT = 253;
+
+const float WIDTH_LINE_COUNT = 11;
+const float HEIGHT_LINE_COUNT = 13;
+
+const float BREAK_BLOCK_WIDTH = 40;
+const float BREAK_BLOCK_HEIGHT = 20;
+
+const float PLAYER_HEIGHT_POS = WINDOW_STANDARD_HEIGHT - 75.f;
+
+
+//float windowCurrSize = WINDOW_STANDARD_SIZE;
 float windowScale = 1.f;
 
 //PlayerLine && Box
 sf::Vector2i mouseStart = sf::Vector2i(0, 0);
+
+sf::Vector2f playerNewPos = sf::Vector2f(0, 0);
+
 sf::VertexArray points(sf::Lines, 2);
 sf::VertexArray box(sf::LineStrip, 5);
 bool leftDown = false;
@@ -29,11 +49,17 @@ bool rightDown = false;
 
 
 //Movement
-std::vector<float> forceVector{ 0.f, 0.f };
+std::vector<float> forceVector{ 20.f, 100.f };
 bool updateForce = false;
 float speedModifier = 1.f; //Player may be able to change this later
-float frictionModifier = 0.4f;
+float frictionModifier = 0.0f;
 
+float speedIncreasePerHit = 0.1f;
+
+
+bool runStart = true;
+
+int _bListSize = 0;
 
 
 /*
@@ -57,6 +83,31 @@ void RectColliderDetection(sf::CircleShape& player, sf::VertexArray rect)
 	}
 }*/
 
+//Start of game for block break
+void startGame()
+{
+	
+
+	//Create break zone
+	Block block;
+	for (int y = (BREAK_BLOCK_HEIGHT / 2.f) + 1; 
+		y < BREAK_ZONE_MAX_HEIGHT - (BREAK_BLOCK_HEIGHT / 2.f); 
+		y += BREAK_BLOCK_HEIGHT + 1)
+	{
+		for (int x = (BREAK_BLOCK_WIDTH / 2.f) + 1; 
+			x < WINDOW_STANDARD_WIDTH - (BREAK_BLOCK_WIDTH / 2.f); 
+			x += BREAK_BLOCK_WIDTH + 1)
+		{
+			block = Block::Block(x, y, BREAK_BLOCK_WIDTH, BREAK_BLOCK_HEIGHT, 5);
+			AddBlockToArray(block);
+		}
+	}
+
+	player = PlayerBlock(WINDOW_STANDARD_WIDTH / 2.f, PLAYER_HEIGHT_POS, 1.5f * BREAK_BLOCK_WIDTH, BREAK_BLOCK_HEIGHT);
+
+	runStart = false;
+}
+
 float lineDistance(float player, float obstacle, bool absoluteValue)
 {
 	if (absoluteValue)
@@ -69,10 +120,14 @@ float lineDistance(float player, float obstacle, bool absoluteValue)
 
 bool updateGame(sf::RenderWindow& window, sf::Clock& clock)
 {
-	float radius = playerShape.getRadius();
+	float radius = ball.getRadius();
 	
 
-	//Update force
+	//
+
+
+
+	//Update Ball force
 	if (updateForce)
 	{
 		forceVector = getMovementVector(points);
@@ -81,25 +136,60 @@ bool updateGame(sf::RenderWindow& window, sf::Clock& clock)
 	}
 
 	//Check if ball is out of bounds
-	if (playerShape.getPosition().x + radius >= WINDOW_STANDARD_SIZE) //Ball has gone too far right
+	if (ball.getPosition().x + radius >= WINDOW_STANDARD_WIDTH) //Ball has gone too far right
 	{
 		forceVector[0] = std::abs(forceVector[0]) * -1.f;
 	}
-	else if (playerShape.getPosition().x - radius <= 0) //Ball has gone too far left
+	else if (ball.getPosition().x - radius <= 0) //Ball has gone too far left
 	{
 		forceVector[0] = std::abs(forceVector[0]);
 	}
-	else if (playerShape.getPosition().y + radius >= WINDOW_STANDARD_SIZE) //Ball has gone too far down
+	else if (ball.getPosition().y + radius >= WINDOW_STANDARD_HEIGHT) //Ball has gone too far down
 	{
 		forceVector[1] = std::abs(forceVector[1]) * -1.f;
 	}
-	else if(playerShape.getPosition().y - radius <= 0) //Ball has gone too far up
+	else if(ball.getPosition().y - radius <= 0) //Ball has gone too far up
 	{
 		//Inverse x force
 		forceVector[1] = std::abs(forceVector[1]);
 	}
 
 	//Check if ball has collided with a spawned entity
+
+	switch (checkBlockOverlap(ball.getPosition(), ball.getRadius()))
+	{
+		case Right:
+			forceVector[0] = std::abs(forceVector[0]);
+			break;
+
+		case Left:
+			forceVector[0] = std::abs(forceVector[0]) * -1.f;
+			break;
+
+		case Top:
+			forceVector[1] = std::abs(forceVector[1]) * -1.f;
+			break;
+
+		case Bottom:
+			forceVector[1] = std::abs(forceVector[1]);
+			break;
+
+		default:
+			//std::cout << "Something has gone wrong or No Collision" << std::endl;
+			break;
+
+	}
+
+	//Check if ball has colldied with player
+	if (checkPlayerOverlap(player, ball.getPosition(), ball.getRadius()) == Top)
+	{
+		forceVector[1] = std::abs(forceVector[1]) * -1.f;
+		speedModifier += speedIncreasePerHit; //Increase ball speed
+	}
+
+
+	//Old code for collision detection
+	/*
 	if (checkObstacleOverlap(playerShape.getPosition(), playerShape.getRadius()) == Right) //Rightmost bound
 	{
 		forceVector[0] = std::abs(forceVector[0]);
@@ -115,7 +205,7 @@ bool updateGame(sf::RenderWindow& window, sf::Clock& clock)
 	else if (checkObstacleOverlap(playerShape.getPosition(), playerShape.getRadius()) == Bottom) //Downmost bound
 	{
 		forceVector[1] = std::abs(forceVector[1]);
-	}
+	}*/
 
 	//Force Vector + Friction
 	forceVector[0] += forceVector[0] * -1.f * frictionModifier * clock.getElapsedTime().asSeconds();
@@ -130,16 +220,17 @@ bool updateGame(sf::RenderWindow& window, sf::Clock& clock)
 
 	//Determine new position of player
 	sf::Vector2f newPos{
-			playerShape.getPosition().x + (speedModifier * forceVector[0] * clock.getElapsedTime().asSeconds()),
-			playerShape.getPosition().y + (speedModifier * forceVector[1] * clock.getElapsedTime().asSeconds())
+			ball.getPosition().x + (speedModifier * forceVector[0] * clock.getElapsedTime().asSeconds()),
+			ball.getPosition().y + (speedModifier * forceVector[1] * clock.getElapsedTime().asSeconds())
 	};
-	playerShape.setPosition(newPos);
+	ball.setPosition(newPos);
 	updateForce = false;
 
 	return true;
 
 }
 
+/*
 void resizeWindow(sf::RenderWindow& window)
 {
 	std::cout << "Gameplay: Window Resized" << std::endl;
@@ -160,7 +251,7 @@ void resizeWindow(sf::RenderWindow& window)
 
 
 
-}
+}*/
 
 
 
@@ -193,14 +284,26 @@ sf::VertexArray getPlayerBoxVertices(sf::RenderWindow& window)
 	return box;
 }
 
+void MovePlayer(sf::RenderWindow& window)
+{
+	playerNewPos = window.mapPixelToCoords(sf::Vector2i(sf::Mouse::getPosition(window).x, PLAYER_HEIGHT_POS));
+
+	player.SetPosition(playerNewPos);
+
+
+}
 
 
 
 int main()
 {
-	
+	WINDOW_STANDARD_WIDTH = (BREAK_BLOCK_WIDTH * (WIDTH_LINE_COUNT - 1)) + WIDTH_LINE_COUNT;
+	BREAK_ZONE_MAX_HEIGHT = (BREAK_BLOCK_HEIGHT * (HEIGHT_LINE_COUNT - 1)) + HEIGHT_LINE_COUNT;
 
-	sf::RenderWindow window(sf::VideoMode((unsigned int)WINDOW_STANDARD_SIZE, (unsigned int)WINDOW_STANDARD_SIZE), "Dungeon!");
+	std::cout << "Window dimensions are: " << WINDOW_STANDARD_WIDTH << " x " << WINDOW_STANDARD_HEIGHT << std::endl;
+	std::cout << "Break zone max height is: " << BREAK_ZONE_MAX_HEIGHT << std::endl;
+
+	sf::RenderWindow window(sf::VideoMode((unsigned int)WINDOW_STANDARD_WIDTH, (unsigned int)WINDOW_STANDARD_HEIGHT), "Dungeon!");
 	
 
 	sf::Time t1 = sf::microseconds(10000);
@@ -228,14 +331,19 @@ int main()
 	title.setStyle(sf::Text::Bold);
 
 	//Set player shape params
-	playerShape.setOrigin(playerShape.getRadius(), playerShape.getRadius());
-	playerShape.setPosition(window.getSize().y / 2.f, window.getSize().y / 2.f);
+	ball.setOrigin(ball.getRadius(), ball.getRadius());
+	ball.setPosition(window.getSize().y / 2.f, window.getSize().y / 2.f);
 
 
 	bool mousePressed = false;
 
 	while (window.isOpen())
 	{
+		if (runStart)
+		{
+			startGame();
+		}
+
 		sf::Event event;
 		if (updateGame(window, clock))
 		{
@@ -254,7 +362,7 @@ int main()
 			}
 			case sf::Event::Resized:
 			{
-				resizeWindow(window);
+				//resizeWindow(window);
 				break;
 			}
 			case sf::Event::LostFocus:
@@ -274,8 +382,14 @@ int main()
 				std::cout << static_cast<char>(event.text.unicode) << " Was Pressed" << std::endl;
 				break;
 			}
+			case sf::Event::MouseMoved:
+			{
+				MovePlayer(window);
+			}
+
 			case sf::Event::MouseButtonPressed:
 			{
+				/*
 				if (!rightDown && event.mouseButton.button == sf::Mouse::Left)
 				{
 					std::cout << "Clicked at  ";
@@ -287,6 +401,7 @@ int main()
 					leftDown = true;
 					break;
 				}
+				
 				else if (!leftDown && event.mouseButton.button == sf::Mouse::Right)
 				{
 					std::cout << "Right button down " << std::endl;
@@ -296,10 +411,11 @@ int main()
 					//Set Control booleans
 					rightDown = true;
 					break;
-				}
+				}*/
 			}
 			case sf::Event::MouseButtonReleased:
 			{
+				/*
 				if (event.mouseButton.button == sf::Mouse::Left && leftDown)
 				{
 					std::cout << "Released at: ";
@@ -313,6 +429,7 @@ int main()
 					break;
 
 				}
+				
 				else if (rightDown && event.mouseButton.button == sf::Mouse::Right)
 				{
 					std::cout << "Released at: ";
@@ -322,7 +439,7 @@ int main()
 					//Set Control booleans
 					rightDown = false;
 					break;
-				}
+				}*/
 			}
 
 			}
@@ -337,9 +454,27 @@ int main()
 
 		//Draw all necessary stuff
 
-		window.draw(playerShape); //Draw Player
+		window.draw(ball); //Draw Player
 
-		if (getObstacleListSize() != 0) //Draw Obstacles
+		//Draw Blocks
+		_bListSize = getBlockListSize();
+		if (_bListSize != 0)
+		{
+			for (int i = 0; i < _bListSize; i++)
+			{
+				window.draw(getBlockVertexArray(i));
+			}
+		}
+
+
+		//Draw Player Block
+		window.draw(player.GetVertexArray());
+
+
+
+		//Draw Obstacles (OLD)
+		/*
+		if (getObstacleListSize() != 0) 
 		{
 			int oSize = getObstacleListSize();
 			for (int i = 0; i < oSize; i++)
@@ -347,10 +482,9 @@ int main()
 				window.draw(getObstacle(i));
 			}
 		}
-
+		*/
 		
-		
-
+		/*
 		if (leftDown) //Left Mouse Functionality
 		{
 			window.draw(getPlayerLineVertices(window));
@@ -358,7 +492,7 @@ int main()
 		if (rightDown) //Right Mouse Functionality
 		{
 			window.draw(getPlayerBoxVertices(window));
-		}
+		}*/
 
 		
 		
