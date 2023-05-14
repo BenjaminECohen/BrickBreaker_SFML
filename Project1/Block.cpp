@@ -114,9 +114,25 @@ void Block::ReColor()
 	
 };
 
+void Block::ReColor(sf::Color newColor)
+{
+	for (int i = 0; i < 5; i++)
+	{
+		sides[i].color = newColor;
+	}
+}
+
 void Block::Interaction() 
 {
 	health -= 1;
+	if (health > 0)
+	{
+		AddScore(5);
+	}
+	else
+	{
+		AddScore(20);
+	}
 	ReColor();
 };
 

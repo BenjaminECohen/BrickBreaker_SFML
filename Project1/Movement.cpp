@@ -25,3 +25,20 @@ std::vector<float> getMovementVector(sf::VertexArray& vertices)
 	return std::vector<float> {to.x - origin.x, to.y - origin.y};
 
 }
+
+std::vector<float> getMovementVector(sf::VertexArray& vertices, bool normalize)
+{
+	if (normalize)
+	{
+		sf::Vector2f origin = vertices[0].position;
+		sf::Vector2f to = vertices[1].position;
+		float length = calculateForce(vertices);
+
+		return std::vector<float> {(to.x - origin.x) / length, (to.y - origin.y) / length};
+	}
+	else
+	{
+		return getMovementVector(vertices);
+	}
+
+}

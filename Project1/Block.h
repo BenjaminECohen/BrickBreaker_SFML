@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include "Score.h"
 
 #ifndef __BLOCK_H_INCLUDED__
 #define __BLOCK_H_INCLUDED__
@@ -9,12 +10,14 @@ protected:
 
 	float posX, posY, width, height;
 	sf::VertexArray sides = sf::VertexArray(sf::Quads, 5);
+	void ReColor();
+	void ReColor(sf::Color);
 
 private:
 	
 
 	int maxHealth, health; //Health = total # of hits to break block
-	void ReColor();
+	
 	
 
 public:

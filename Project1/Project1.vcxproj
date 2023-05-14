@@ -134,12 +134,14 @@
     <ClCompile Include="Movement.cpp" />
     <ClCompile Include="PlayerBlock.cpp" />
     <ClCompile Include="PlayerDrawables.cpp" />
+    <ClCompile Include="Score.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h" />
     <ClInclude Include="Movement.h" />
     <ClInclude Include="PlayerBlock.h" />
     <ClInclude Include="PlayerDrawables.h" />
+    <ClInclude Include="Score.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
