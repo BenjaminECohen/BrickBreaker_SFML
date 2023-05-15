@@ -1,25 +1,43 @@
-﻿  Main.cpp
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(116,13): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(118,30): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(120,14): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(122,30): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(124,28): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(124,25): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(249,37): warning C4244: '=': conversion from 'double' to '_Ty', possible loss of data
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(249,37): warning C4244:         with
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(249,37): warning C4244:         [
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(249,37): warning C4244:             _Ty=float
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(249,37): warning C4244:         ]
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(253,77): warning C4244: '=': conversion from 'double' to '_Ty', possible loss of data
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(253,77): warning C4244:         with
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(253,77): warning C4244:         [
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(253,77): warning C4244:             _Ty=float
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(253,77): warning C4244:         ]
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(362,20): warning C4018: '<': signed/unsigned mismatch
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(373,88): warning C4244: 'argument': conversion from 'const float' to 'T', possible loss of data
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(373,88): warning C4244:         with
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(373,88): warning C4244:         [
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(373,88): warning C4244:             T=int
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(373,88): warning C4244:         ]
-D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(394,17): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+﻿  Block.cpp
+  Main.cpp
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(99,13): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(101,30): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(103,14): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(105,30): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(107,28): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(107,25): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(244,37): warning C4244: '=': conversion from 'double' to '_Ty', possible loss of data
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(244,37): warning C4244:         with
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(244,37): warning C4244:         [
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(244,37): warning C4244:             _Ty=float
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(244,37): warning C4244:         ]
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(248,77): warning C4244: '=': conversion from 'double' to '_Ty', possible loss of data
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(248,77): warning C4244:         with
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(248,77): warning C4244:         [
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(248,77): warning C4244:             _Ty=float
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(248,77): warning C4244:         ]
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(357,20): warning C4018: '<': signed/unsigned mismatch
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(368,88): warning C4244: 'argument': conversion from 'const float' to 'T', possible loss of data
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(368,88): warning C4244:         with
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(368,88): warning C4244:         [
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(368,88): warning C4244:             T=int
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(368,88): warning C4244:         ]
+  PlayerBlock.cpp
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\Main.cpp(431,17): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\PlayerBlock.cpp(23,20): warning C4018: '<': signed/unsigned mismatch
+  PlayerDrawables.cpp
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\PlayerBlock.cpp(47,20): warning C4018: '<': signed/unsigned mismatch
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\PlayerDrawables.cpp(56,20): warning C4018: '<': signed/unsigned mismatch
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\PlayerDrawables.cpp(84,20): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\PlayerDrawables.cpp(90,27): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\PlayerDrawables.cpp(95,27): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\PlayerDrawables.cpp(100,27): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\PlayerDrawables.cpp(118,20): warning C4018: '<': signed/unsigned mismatch
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\PlayerDrawables.cpp(141,19): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\PlayerDrawables.cpp(146,26): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\PlayerDrawables.cpp(151,26): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\PlayerDrawables.cpp(156,26): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\PlayerDrawables.cpp(178,20): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
+D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Project1\PlayerDrawables.cpp(208,12): warning C4018: '>=': signed/unsigned mismatch
   Project1.vcxproj -> D:\_Benjamin_Cohen\Assets\SFML\Project1\Project1\Debug\Project1.exe

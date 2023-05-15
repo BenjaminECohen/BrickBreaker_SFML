@@ -12,7 +12,7 @@ void AddScore(int pointsToAdd)
 
 void UpdateScoreText(sf::Text& scoreText)
 {
-	scoreText.setString("Score: " + std::to_string(_Score));
+	scoreText.setString(" Score: " + std::to_string(_Score));
 }
 
 int GetScore()

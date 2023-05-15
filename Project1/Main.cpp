@@ -45,10 +45,18 @@ const double PI = 3.14159f;
 float windowScale = 1.f;
 
 
-//Score
+//UI
 sf::Text scoreText;
-const int HIT_POINTS = 5;
-const int BREAK_POINTS = 20;
+sf::Text countdownText;
+sf::Text livesText;
+sf::Text gameStateText;
+
+//Lives
+const int LIVES_MAX = 3;
+int lives = LIVES_MAX;
+std::string livesRep = "|";
+
+
 
 
 //PlayerLine && Box
@@ -76,32 +84,7 @@ bool runStart = true;
 
 int _bListSize = 0;
 
-
-
-
-/*
-void RectColliderDetection(sf::CircleShape& player, sf::VertexArray rect)
-{
-	float rectTop = rect[0].position.y;
-	float rectBot = rect[3].position.y;
-	float rectRight = rect[1].position.x;
-	float rectLeft = rect[0].position.x;
-
-	while (true)
-	{
-
-		//Check Bottom
-		if (lineDistance(player.getPosition().y, rectBot, false) <= 0)
-		{
-
-		}
-		//Check Top
-		
-	}
-}*/
-
-
-
+#pragma region Game Loop
 
 //Start of game for block break
 void startGame()
@@ -126,7 +109,12 @@ void startGame()
 		}
 	}
 
+	//Create Player
 	player = PlayerBlock(WINDOW_STANDARD_WIDTH / 2.f, PLAYER_HEIGHT_POS, 1.5f * BREAK_BLOCK_WIDTH, BREAK_BLOCK_HEIGHT);
+
+
+	//Set Lives
+
 
 	runStart = false;
 }
@@ -140,12 +128,12 @@ void ThreadWaitBallReset()
 	
 }
 
-void ResetBall(sf::RenderWindow& window)
+void ResetBall()
 {
 	forceVector[0] = 0.f;
 	forceVector[1] = 0.f;
 	speedModifier = 1.f;
-	ball.setPosition(window.getSize().y / 2.f, window.getSize().y / 2.f);
+	ball.setPosition(WINDOW_STANDARD_WIDTH / 2.f, WINDOW_STANDARD_HEIGHT / 2.f);
 
 	//ADDME: Decrease Player Lives
 
@@ -197,8 +185,15 @@ bool updateGame(sf::RenderWindow& window, sf::Clock& clock)
 	}
 	else if (ball.getPosition().y + radius >= WINDOW_STANDARD_HEIGHT) //Ball has gone too far down
 	{
+		//Lose Life
+		--lives;
+
 		//Ball out of bounds and needs reset
-		ResetBall(window);
+		if (lives != 0)
+		{
+			ResetBall();
+		}
+		
 		//forceVector[1] = std::abs(forceVector[1]) * -1.f;
 	}
 	else if(ball.getPosition().y - radius <= 0) //Ball has gone too far up
@@ -339,13 +334,13 @@ void resizeWindow(sf::RenderWindow& window)
 
 }*/
 
+#pragma endregion
 
+
+#pragma region Player Functions
 
 sf::VertexArray generateVectorShotLine()
 {
-
-	
-
 	return vsLine;
 
 }
@@ -377,20 +372,62 @@ void MovePlayer(sf::RenderWindow& window)
 
 }
 
+#pragma endregion
 
 
+#pragma region UI Functions
+//Lives Methods
+void UpdateLivesText()
+{
+	std::string temp = "";
 
+	for (int i = 0; i < lives; i++)
+	{
+		temp += livesRep + " ";
+	}
+
+	livesText.setString(temp);
+
+	
+	sf::FloatRect livesRect = livesText.getLocalBounds();
+	livesText.setOrigin(livesRect.left + livesRect.width,
+		livesRect.top + livesRect.height / 2.f);
+
+}
+
+void SetGameText(std::string val)
+{
+	gameStateText.setString(val);
+}
+
+sf::Text GetGameText()
+{
+	sf::FloatRect textRect = gameStateText.getLocalBounds();
+	gameStateText.setOrigin(textRect.left + textRect.width / 2.f,
+		textRect.top + textRect.height / 2.f);
+	gameStateText.setPosition(WINDOW_STANDARD_WIDTH / 2.f, WINDOW_STANDARD_HEIGHT / 2.f);
+	return gameStateText;
+}
+
+
+#pragma endregion
 
 int main()
 {
 	WINDOW_STANDARD_WIDTH = (BREAK_BLOCK_WIDTH * (WIDTH_LINE_COUNT - 1)) + WIDTH_LINE_COUNT;
 	BREAK_ZONE_MAX_HEIGHT = (BREAK_BLOCK_HEIGHT * (HEIGHT_LINE_COUNT - 1)) + HEIGHT_LINE_COUNT;
 
-	std::cout << "Window dimensions are: " << WINDOW_STANDARD_WIDTH << " x " << WINDOW_STANDARD_HEIGHT << std::endl;
+	std::cout << "Window dimensions are: " << WINDOW_STANDARD_WIDTH << " by " << WINDOW_STANDARD_HEIGHT << std::endl;
 	std::cout << "Break zone max height is: " << BREAK_ZONE_MAX_HEIGHT << std::endl;
 
-	sf::RenderWindow window(sf::VideoMode((unsigned int)WINDOW_STANDARD_WIDTH, (unsigned int)WINDOW_STANDARD_HEIGHT), "Dungeon!");
+	sf::RenderWindow window(sf::VideoMode((unsigned int)WINDOW_STANDARD_WIDTH, (unsigned int)WINDOW_STANDARD_HEIGHT), "Brick Breaker XV: Redux EXCITE 5!");
 	
+
+	std::cout << "Window dimensions by window default view: " << window.getDefaultView().getSize().x 
+		<< " by " << window.getDefaultView().getSize().y << std::endl;
+	std::cout << "Window dimensions by window size: " << window.getSize().x 
+		<< " by " << window.getSize().y << std::endl;
+
 	srand(std::time(0));
 
 	sf::Time t1 = sf::microseconds(10000);
@@ -401,7 +438,7 @@ int main()
 
 	sf::Clock clock;
 	//std::thread timedFunc(timeSurprise, 5.f);
-
+	sf::FloatRect textRect;
 
 	sf::Font font1;
 	if (!font1.loadFromFile("Game Of Squids.ttf"))
@@ -416,10 +453,32 @@ int main()
 	scoreText.setFillColor(sf::Color::Green);
 	scoreText.setStyle(sf::Text::Bold);
 	UpdateScoreText(scoreText);
+	textRect = scoreText.getLocalBounds();
+	scoreText.setOrigin(0, textRect.top + textRect.height / 2.f);
+	
+
+
+	//Set Lives
+	livesText.setFont(font1);
+	textRect = livesText.getLocalBounds();
+	livesText.setOrigin(textRect.left + textRect.width,
+		textRect.top + textRect.height / 2.f);
+	livesText.setPosition(WINDOW_STANDARD_WIDTH, 575);
+	livesText.setCharacterSize(24);
+	livesText.setFillColor(sf::Color::Green);
+	livesText.setStyle(sf::Text::Bold);
+
+
+	//Set GameText
+	gameStateText.setFont(font1);
+	gameStateText.setCharacterSize(24);
+	gameStateText.setFillColor(sf::Color::Green);
+	gameStateText.setStyle(sf::Text::Bold);
+
 
 	//Set ball params
 	ball.setOrigin(ball.getRadius(), ball.getRadius());
-	ball.setPosition(window.getSize().y / 2.f, window.getSize().y / 2.f);
+	ball.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f);
 	forceVector = BALL_START_FORCE;
 
 
@@ -433,9 +492,14 @@ int main()
 		}
 
 		sf::Event event;
-		if (updateGame(window, clock))
+		if (lives != 0 && updateGame(window, clock))
 		{
 			clock.restart();
+		}
+		else
+		{
+			SetGameText("Game Over");
+			//End game
 		}
 
 		while (window.pollEvent(event))
@@ -610,10 +674,14 @@ int main()
 		}*/
 
 		
+		window.draw(GetGameText());
+		
 		
 		UpdateScoreText(scoreText);
 		window.draw(scoreText);
 		
+		UpdateLivesText();
+		window.draw(livesText);
 
 
 
