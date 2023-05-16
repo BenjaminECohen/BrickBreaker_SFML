@@ -17,4 +17,4 @@ Vector Shot: Clicking Left Mouse button enters Vector Shot Mode
 OR the player presses the Left Mouse Button again
 
 pressing "ESC" on Game Over or Game Win will exit the Game
-pressing "r" on Game Over or Game Win 
+pressing "r" on Game Over or Game Win will restart the game
