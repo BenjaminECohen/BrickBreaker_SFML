@@ -14,5 +14,7 @@ extern void UpdateScoreText(sf::Text& scoreText);
 
 extern int GetScore();
 
+extern void ResetScore();
+
 
 #endif

@@ -53,7 +53,7 @@ sf::Text gameStateText;
 
 //Lives
 const int LIVES_MAX = 3;
-int lives = LIVES_MAX;
+int lives;
 std::string livesRep = "|";
 
 
@@ -84,6 +84,44 @@ bool runStart = true;
 
 int _bListSize = 0;
 
+#pragma region UI Functions
+//Lives Methods
+void UpdateLivesText()
+{
+	std::string temp = "";
+
+	for (int i = 0; i < lives; i++)
+	{
+		temp += livesRep + " ";
+	}
+
+	livesText.setString(temp);
+
+
+	sf::FloatRect livesRect = livesText.getLocalBounds();
+	livesText.setOrigin(livesRect.left + livesRect.width,
+		livesRect.top + livesRect.height / 2.f);
+
+}
+
+void SetGameText(std::string val)
+{
+	gameStateText.setString(val);
+}
+
+sf::Text GetGameText()
+{
+	sf::FloatRect textRect = gameStateText.getLocalBounds();
+	gameStateText.setOrigin(textRect.left + textRect.width / 2.f,
+		textRect.top + textRect.height / 2.f);
+	gameStateText.setPosition(WINDOW_STANDARD_WIDTH / 2.f, WINDOW_STANDARD_HEIGHT / 2.f);
+	return gameStateText;
+}
+
+
+#pragma endregion
+
+
 #pragma region Game Loop
 
 //Start of game for block break
@@ -109,11 +147,26 @@ void startGame()
 		}
 	}
 
+
 	//Create Player
 	player = PlayerBlock(WINDOW_STANDARD_WIDTH / 2.f, PLAYER_HEIGHT_POS, 1.5f * BREAK_BLOCK_WIDTH, BREAK_BLOCK_HEIGHT);
 
+	//Set ball params
+	ball.setFillColor(sf::Color::White);
 
-	//Set Lives
+	ball.setPosition(WINDOW_STANDARD_WIDTH / 2.f, WINDOW_STANDARD_HEIGHT / 2.f);
+	forceVector = BALL_START_FORCE;
+
+	speedModifier = 1.f;
+
+	//Lives
+	lives = LIVES_MAX;
+
+	//Score
+	ResetScore();
+
+	//GameText
+	SetGameText("");
 
 
 	runStart = false;
@@ -162,17 +215,7 @@ bool updateGame(sf::RenderWindow& window, sf::Clock& clock)
 	//FIXME
 	//std::cout << "New Position" << ball.getPosition().x << ", " << ball.getPosition().y << std::endl;
 
-	//
-
-
-
-	//Update Ball force
-	if (updateForce)
-	{
-		forceVector = getMovementVector(vsLine);
-		std::cout << "X Force:  " << forceVector[0] << std::endl;
-		std::cout << "Y Force:  " << forceVector[1] << std::endl;
-	}
+	
 
 	//Check if ball is out of bounds
 	if (ball.getPosition().x + radius >= WINDOW_STANDARD_WIDTH) //Ball has gone too far right
@@ -187,6 +230,7 @@ bool updateGame(sf::RenderWindow& window, sf::Clock& clock)
 	{
 		//Lose Life
 		--lives;
+		std::cout << "Ball out of bounds, live lost: x: " << ball.getPosition().x << " y: "<< ball.getPosition().y << std::endl;
 
 		//Ball out of bounds and needs reset
 		if (lives != 0)
@@ -204,7 +248,7 @@ bool updateGame(sf::RenderWindow& window, sf::Clock& clock)
 
 	//Check if ball has collided with a spawned entity
 
-	switch (checkBlockOverlap(ball.getPosition(), ball.getRadius()))
+	switch (checkBlockOverlap(ball.getPosition(), ball.getRadius(), speedModifier))
 	{
 		case Right:
 			forceVector[0] = std::abs(forceVector[0]);
@@ -267,26 +311,6 @@ bool updateGame(sf::RenderWindow& window, sf::Clock& clock)
 
 		
 	}
-
-
-	//Old code for collision detection
-	/*
-	if (checkObstacleOverlap(playerShape.getPosition(), playerShape.getRadius()) == Right) //Rightmost bound
-	{
-		forceVector[0] = std::abs(forceVector[0]);
-	}
-	else if (checkObstacleOverlap(playerShape.getPosition(), playerShape.getRadius()) == Left) //Leftmost bound
-	{
-		forceVector[0] = std::abs(forceVector[0]) * -1.f;
-	}
-	else if (checkObstacleOverlap(playerShape.getPosition(), playerShape.getRadius()) == Top) //Upper bound
-	{
-		forceVector[1] = std::abs(forceVector[1]) * -1.f;
-	}
-	else if (checkObstacleOverlap(playerShape.getPosition(), playerShape.getRadius()) == Bottom) //Downmost bound
-	{
-		forceVector[1] = std::abs(forceVector[1]);
-	}*/
 
 	//Force Vector + Friction
 	forceVector[0] += forceVector[0] * -1.f * frictionModifier * clock.getElapsedTime().asSeconds();
@@ -375,42 +399,7 @@ void MovePlayer(sf::RenderWindow& window)
 #pragma endregion
 
 
-#pragma region UI Functions
-//Lives Methods
-void UpdateLivesText()
-{
-	std::string temp = "";
 
-	for (int i = 0; i < lives; i++)
-	{
-		temp += livesRep + " ";
-	}
-
-	livesText.setString(temp);
-
-	
-	sf::FloatRect livesRect = livesText.getLocalBounds();
-	livesText.setOrigin(livesRect.left + livesRect.width,
-		livesRect.top + livesRect.height / 2.f);
-
-}
-
-void SetGameText(std::string val)
-{
-	gameStateText.setString(val);
-}
-
-sf::Text GetGameText()
-{
-	sf::FloatRect textRect = gameStateText.getLocalBounds();
-	gameStateText.setOrigin(textRect.left + textRect.width / 2.f,
-		textRect.top + textRect.height / 2.f);
-	gameStateText.setPosition(WINDOW_STANDARD_WIDTH / 2.f, WINDOW_STANDARD_HEIGHT / 2.f);
-	return gameStateText;
-}
-
-
-#pragma endregion
 
 int main()
 {
@@ -420,7 +409,7 @@ int main()
 	std::cout << "Window dimensions are: " << WINDOW_STANDARD_WIDTH << " by " << WINDOW_STANDARD_HEIGHT << std::endl;
 	std::cout << "Break zone max height is: " << BREAK_ZONE_MAX_HEIGHT << std::endl;
 
-	sf::RenderWindow window(sf::VideoMode((unsigned int)WINDOW_STANDARD_WIDTH, (unsigned int)WINDOW_STANDARD_HEIGHT), "Brick Breaker XV: Redux EXCITE 5!");
+	sf::RenderWindow window(sf::VideoMode((unsigned int)WINDOW_STANDARD_WIDTH, (unsigned int)WINDOW_STANDARD_HEIGHT), "Brick Breaker XV: Redux EXCITE 5!", sf::Style::Titlebar | sf::Style::Close);
 	
 
 	std::cout << "Window dimensions by window default view: " << window.getDefaultView().getSize().x 
@@ -475,149 +464,193 @@ int main()
 	gameStateText.setFillColor(sf::Color::Green);
 	gameStateText.setStyle(sf::Text::Bold);
 
-
-	//Set ball params
 	ball.setOrigin(ball.getRadius(), ball.getRadius());
-	ball.setPosition(window.getSize().x / 2.f, window.getSize().y / 2.f);
-	forceVector = BALL_START_FORCE;
+	
 
 
 	bool mousePressed = false;
+
+	bool gameWon = false;
 
 	while (window.isOpen())
 	{
 		if (runStart)
 		{
+			clock.restart();
+			//std::cout << clock.getElapsedTime().asSeconds() << std::endl;
 			startGame();
 		}
 
 		sf::Event event;
-		if (lives != 0 && updateGame(window, clock))
+		if (BlockArraySize() == 0 && !gameWon)
 		{
+			gameWon = true;
+			std::cout << "Game Won" << std::endl;
+			SetGameText("You Won!");
+			forceVector = { 0, 0 };
+			ball.setPosition(WINDOW_STANDARD_WIDTH / 2.f, WINDOW_STANDARD_HEIGHT / 2.f);
+			ball.setFillColor(sf::Color::Transparent);
+		}
+		else if (lives > 0 && !gameWon)
+		{
+			updateGame(window, clock);
 			clock.restart();
 		}
-		else
+		else if (lives == 0)
 		{
+			--lives; //Now none of the IF statement will play over and over again
+
+			std::cout << "Game Over" << std::endl;
 			SetGameText("Game Over");
+			forceVector = { 0, 0 };
+			ball.setPosition(WINDOW_STANDARD_WIDTH / 2.f, WINDOW_STANDARD_HEIGHT / 2.f);
+			ball.setFillColor(sf::Color::Transparent);
 			//End game
 		}
 
-		while (window.pollEvent(event))
+		//Game play Loop
+		if (lives > 0 && !gameWon)
 		{
-			switch (event.type)
+			while (window.pollEvent(event))
 			{
-			case sf::Event::Closed:
-			{
-				std::cout << "Closing Window" << std::endl;
-				window.close();
-				break;
-			}
-			case sf::Event::Resized:
-			{
-				//resizeWindow(window);
-				break;
-			}
-			case sf::Event::LostFocus:
-			{
-				std::cout << "Lost Focus" << std::endl;
-				//Pasue game or do something
-				break;
-			}
-			case sf::Event::GainedFocus:
-			{
-				std::cout << "Gained Focus" << std::endl;
-				//Resume game or do something
-				break;
-			}
-			case sf::Event::TextEntered:
-			{
-				std::cout << static_cast<char>(event.text.unicode) << " Was Pressed" << std::endl;
-				break;
-			}			
-			case sf::Event::MouseButtonPressed:
-			{
-				//Catch mode change
-				//Enable Vector Shot
-				if (event.mouseButton.button == sf::Mouse::Left && player.GetMode() == PlayerBlock::Mode::Normal)
+				switch (event.type)
 				{
-					player.SetMode(PlayerBlock::Mode::Vector);
+					case sf::Event::Closed:
+					{
+						std::cout << "Closing Window" << std::endl;
+						window.close();
+						break;
+					}
+					case sf::Event::Resized:
+					{
+						//resizeWindow(window);
+						break;
+					}
+					case sf::Event::LostFocus:
+					{
+						std::cout << "Lost Focus" << std::endl;
+						//Pasue game or do something
+						break;
+					}
+					case sf::Event::GainedFocus:
+					{
+						std::cout << "Gained Focus" << std::endl;
+						//Resume game or do something
+						break;
+					}
+					case sf::Event::MouseButtonPressed:
+					{
+						//Catch mode change
+						//Enable Vector Shot
+						if (event.mouseButton.button == sf::Mouse::Left && player.GetMode() == PlayerBlock::Mode::Normal)
+						{
+							player.SetMode(PlayerBlock::Mode::Vector);
+						}
+						//Disable Vector Shot
+						else if (event.mouseButton.button == sf::Mouse::Left && player.GetMode() == PlayerBlock::Mode::Vector)
+						{
+							player.SetMode(PlayerBlock::Mode::Normal);
+						}
+
+						/*
+						if (!rightDown && event.mouseButton.button == sf::Mouse::Left)
+						{
+							std::cout << "Clicked at  ";
+							std::cout << "x: " << event.mouseButton.x << " y: " << event.mouseButton.y << std::endl;
+							mouseStart = sf::Vector2i(event.mouseButton.x, event.mouseButton.y);
+
+							//Set control booleans
+							mousePressed = true;
+							leftDown = true;
+							break;
+						}
+
+						else if (!leftDown && event.mouseButton.button == sf::Mouse::Right)
+						{
+							std::cout << "Right button down " << std::endl;
+							std::cout << "x: " << event.mouseButton.x << " y: " << event.mouseButton.y << std::endl;
+							mouseStart = sf::Vector2i(event.mouseButton.x, event.mouseButton.y);
+
+							//Set Control booleans
+							rightDown = true;
+							break;
+						}*/
+					}
+					case sf::Event::MouseMoved:
+					{
+						if (player.GetMode() == PlayerBlock::Mode::Normal)
+						{
+							MovePlayer(window);
+						}
+						if (player.GetMode() == PlayerBlock::Mode::Vector)
+						{
+							//Get Origin of Player as start and mouse pos as end of line
+							vsLine[0].position = player.GetPosition() - sf::Vector2f(0, player.GetHeight() / 2.f);
+							vsLine[1].position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+						}
+
+					}
+
+					case sf::Event::MouseButtonReleased:
+					{
+						/*
+						if (event.mouseButton.button == sf::Mouse::Left && leftDown)
+						{
+							std::cout << "Released at: ";
+							std::cout << "x: " << event.mouseButton.x << " y: " << event.mouseButton.y << std::endl;
+
+							updateForce = true;
+
+							//Set control booleans
+							mousePressed = false;
+							leftDown = false;
+							break;
+
+						}
+
+						else if (rightDown && event.mouseButton.button == sf::Mouse::Right)
+						{
+							std::cout << "Released at: ";
+							std::cout << "x: " << event.mouseButton.x << " y: " << event.mouseButton.y << std::endl;
+							createObstacleVertexArray(box);
+
+							//Set Control booleans
+							rightDown = false;
+							break;
+						}*/
+					}
+
 				}
-				//Disable Vector Shot
-				else if (event.mouseButton.button == sf::Mouse::Left && player.GetMode() == PlayerBlock::Mode::Vector)
-				{
-					player.SetMode(PlayerBlock::Mode::Normal);
-				}
 
-				/*
-				if (!rightDown && event.mouseButton.button == sf::Mouse::Left)
-				{
-					std::cout << "Clicked at  ";
-					std::cout << "x: " << event.mouseButton.x << " y: " << event.mouseButton.y << std::endl;
-					mouseStart = sf::Vector2i(event.mouseButton.x, event.mouseButton.y);
-
-					//Set control booleans
-					mousePressed = true;
-					leftDown = true;
-					break;
-				}
-				
-				else if (!leftDown && event.mouseButton.button == sf::Mouse::Right)
-				{
-					std::cout << "Right button down " << std::endl;
-					std::cout << "x: " << event.mouseButton.x << " y: " << event.mouseButton.y << std::endl;
-					mouseStart = sf::Vector2i(event.mouseButton.x, event.mouseButton.y);
-
-					//Set Control booleans
-					rightDown = true;
-					break;
-				}*/
 			}
-			case sf::Event::MouseMoved:
+
+		}
+		else
+		{
+			while (window.pollEvent(event))
 			{
-				if (player.GetMode() == PlayerBlock::Mode::Normal)
+				switch (event.type)
 				{
-					MovePlayer(window);
+					case sf::Event::TextEntered:
+					{
+						std::cout << static_cast<char>(event.text.unicode) << " Was Pressed" << std::endl;
+						if (static_cast<char>(event.text.unicode) == 'r')
+						{
+							ClearBlockArray();
+							gameWon = false;
+							runStart = true;
+						}
+						else if (static_cast<int>(event.text.unicode) == 27)
+						{
+							window.close();
+						}
+						
+						break;
+					}
 				}
-				if (player.GetMode() == PlayerBlock::Mode::Vector)
-				{
-					//Get Origin of Player as start and mouse pos as end of line
-					vsLine[0].position = player.GetPosition() - sf::Vector2f(0, player.GetHeight() / 2.f);
-					vsLine[1].position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-				}
-
-			}
-
-			case sf::Event::MouseButtonReleased:
-			{
-				/*
-				if (event.mouseButton.button == sf::Mouse::Left && leftDown)
-				{
-					std::cout << "Released at: ";
-					std::cout << "x: " << event.mouseButton.x << " y: " << event.mouseButton.y << std::endl;
-					
-					updateForce = true;
-
-					//Set control booleans
-					mousePressed = false;
-					leftDown = false;
-					break;
-
-				}
-				
-				else if (rightDown && event.mouseButton.button == sf::Mouse::Right)
-				{
-					std::cout << "Released at: ";
-					std::cout << "x: " << event.mouseButton.x << " y: " << event.mouseButton.y << std::endl;
-					createObstacleVertexArray(box);
-
-					//Set Control booleans
-					rightDown = false;
-					break;
-				}*/
-			}
-
 			}
 		}
+		
 
 		
 
@@ -648,30 +681,6 @@ int main()
 		{
 			window.draw(generateVectorShotLine());
 		}
-		
-
-
-		//Draw Obstacles (OLD)
-		/*
-		if (getObstacleListSize() != 0) 
-		{
-			int oSize = getObstacleListSize();
-			for (int i = 0; i < oSize; i++)
-			{
-				window.draw(getObstacle(i));
-			}
-		}
-		*/
-		
-		/*
-		if (leftDown) //Left Mouse Functionality
-		{
-			window.draw(generateVectorShotLine);
-		}
-		if (rightDown) //Right Mouse Functionality
-		{
-			window.draw(getPlayerBoxVertices(window));
-		}*/
 
 		
 		window.draw(GetGameText());

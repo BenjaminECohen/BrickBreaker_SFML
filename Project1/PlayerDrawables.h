@@ -16,21 +16,16 @@ enum CollisionSide
 CollisionSide checkPlayerOverlap(PlayerBlock playerBlock, sf::Vector2f position, float radius);
 
 
-CollisionSide checkBlockOverlap(sf::Vector2f position, float radius);
-
-CollisionSide checkObstacleOverlap(sf::Vector2f position, float radius);
+CollisionSide checkBlockOverlap(sf::Vector2f position, float radius, float scoreMultiplier);
 
 void AddBlockToArray(Block newBlock);
-
-sf::VertexArray createObstacleVertexArray(sf::VertexArray box);
 
 int getBlockListSize();
 
 sf::VertexArray& getBlockVertexArray(int index);
 
+void ClearBlockArray();
 
-int getObstacleListSize();
+int BlockArraySize();
 
-bool checkIndexExist(int index);
 
-sf::VertexArray getObstacle(int index);

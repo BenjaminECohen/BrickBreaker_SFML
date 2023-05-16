@@ -136,6 +136,21 @@ void Block::Interaction()
 	ReColor();
 };
 
+
+void Block::Interaction(float scoreMultiplier)
+{
+	health -= 1;
+	if (health > 0)
+	{
+		AddScore(static_cast<int>(5.0f * scoreMultiplier));
+	}
+	else
+	{
+		AddScore(static_cast<int>(20.0f * scoreMultiplier));
+	}
+	ReColor();
+};
+
 int Block::specialReturn()
 {
 	return 0;

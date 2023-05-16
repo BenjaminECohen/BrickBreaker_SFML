@@ -1,5 +1,6 @@
 #include "Score.h"
 #include <string>
+#include <iostream>
 
 
 int _Score = 0;
@@ -18,6 +19,11 @@ void UpdateScoreText(sf::Text& scoreText)
 int GetScore()
 {
 	return _Score;
+}
+
+void ResetScore()
+{
+	_Score = 0;
 }
 
 

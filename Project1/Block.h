@@ -40,6 +40,8 @@ public:
 	
 	virtual void Interaction();
 
+	void Interaction(float scoreMultiplier);
+
 	virtual int specialReturn();
 
 
