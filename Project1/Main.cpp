@@ -149,7 +149,7 @@ void startGame()
 
 
 	//Create Player
-	player = PlayerBlock(WINDOW_STANDARD_WIDTH / 2.f, PLAYER_HEIGHT_POS, 1.5f * BREAK_BLOCK_WIDTH, BREAK_BLOCK_HEIGHT);
+	player = PlayerBlock(WINDOW_STANDARD_WIDTH / 2.f, PLAYER_HEIGHT_POS, 1.5f * BREAK_BLOCK_WIDTH, BREAK_BLOCK_HEIGHT / 4.f);
 
 	//Set ball params
 	ball.setFillColor(sf::Color::White);
@@ -391,6 +391,16 @@ void MovePlayer(sf::RenderWindow& window)
 {
 	playerNewPos = window.mapPixelToCoords(sf::Vector2i(sf::Mouse::getPosition(window).x, PLAYER_HEIGHT_POS));
 
+	if (playerNewPos.x - player.GetWidth() / 2.f < 0)
+	{
+		playerNewPos.x = player.GetWidth() / 2.f;
+	}
+	if (playerNewPos.x + player.GetWidth() / 2.f > WINDOW_STANDARD_WIDTH)
+	{
+		playerNewPos.x = WINDOW_STANDARD_WIDTH - player.GetWidth() / 2.f;
+	}
+
+
 	player.SetPosition(playerNewPos);
 
 
@@ -409,21 +419,10 @@ int main()
 	std::cout << "Window dimensions are: " << WINDOW_STANDARD_WIDTH << " by " << WINDOW_STANDARD_HEIGHT << std::endl;
 	std::cout << "Break zone max height is: " << BREAK_ZONE_MAX_HEIGHT << std::endl;
 
-	sf::RenderWindow window(sf::VideoMode((unsigned int)WINDOW_STANDARD_WIDTH, (unsigned int)WINDOW_STANDARD_HEIGHT), "Brick Breaker XV: Redux EXCITE 5!", sf::Style::Titlebar | sf::Style::Close);
-	
-
-	std::cout << "Window dimensions by window default view: " << window.getDefaultView().getSize().x 
-		<< " by " << window.getDefaultView().getSize().y << std::endl;
-	std::cout << "Window dimensions by window size: " << window.getSize().x 
-		<< " by " << window.getSize().y << std::endl;
+	sf::RenderWindow window(sf::VideoMode((unsigned int)WINDOW_STANDARD_WIDTH, (unsigned int)WINDOW_STANDARD_HEIGHT),
+		"Brick Breaker XV: Redux EXCITE 5!", sf::Style::Titlebar | sf::Style::Close);
 
 	srand(std::time(0));
-
-	sf::Time t1 = sf::microseconds(10000);
-	sf::Time t2 = sf::milliseconds(10);
-	sf::Time t3 = sf::seconds(0.01f);
-
-	float sec = t3.asSeconds();
 
 	sf::Clock clock;
 	//std::thread timedFunc(timeSurprise, 5.f);
@@ -552,29 +551,6 @@ int main()
 							player.SetMode(PlayerBlock::Mode::Normal);
 						}
 
-						/*
-						if (!rightDown && event.mouseButton.button == sf::Mouse::Left)
-						{
-							std::cout << "Clicked at  ";
-							std::cout << "x: " << event.mouseButton.x << " y: " << event.mouseButton.y << std::endl;
-							mouseStart = sf::Vector2i(event.mouseButton.x, event.mouseButton.y);
-
-							//Set control booleans
-							mousePressed = true;
-							leftDown = true;
-							break;
-						}
-
-						else if (!leftDown && event.mouseButton.button == sf::Mouse::Right)
-						{
-							std::cout << "Right button down " << std::endl;
-							std::cout << "x: " << event.mouseButton.x << " y: " << event.mouseButton.y << std::endl;
-							mouseStart = sf::Vector2i(event.mouseButton.x, event.mouseButton.y);
-
-							//Set Control booleans
-							rightDown = true;
-							break;
-						}*/
 					}
 					case sf::Event::MouseMoved:
 					{
@@ -589,35 +565,6 @@ int main()
 							vsLine[1].position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 						}
 
-					}
-
-					case sf::Event::MouseButtonReleased:
-					{
-						/*
-						if (event.mouseButton.button == sf::Mouse::Left && leftDown)
-						{
-							std::cout << "Released at: ";
-							std::cout << "x: " << event.mouseButton.x << " y: " << event.mouseButton.y << std::endl;
-
-							updateForce = true;
-
-							//Set control booleans
-							mousePressed = false;
-							leftDown = false;
-							break;
-
-						}
-
-						else if (rightDown && event.mouseButton.button == sf::Mouse::Right)
-						{
-							std::cout << "Released at: ";
-							std::cout << "x: " << event.mouseButton.x << " y: " << event.mouseButton.y << std::endl;
-							createObstacleVertexArray(box);
-
-							//Set Control booleans
-							rightDown = false;
-							break;
-						}*/
 					}
 
 				}
@@ -645,6 +592,11 @@ int main()
 							window.close();
 						}
 						
+						break;
+					}
+					case sf::Event::Closed:
+					{
+						window.close();
 						break;
 					}
 				}
