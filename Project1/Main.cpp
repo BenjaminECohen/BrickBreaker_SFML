@@ -194,17 +194,6 @@ void ResetBall()
 }
 
 
-
-float lineDistance(float player, float obstacle, bool absoluteValue)
-{
-	if (absoluteValue)
-	{
-		return std::abs(player - obstacle);
-	}
-	return player - obstacle;
-}
-
-
 bool updateGame(sf::RenderWindow& window, sf::Clock& clock)
 {
 	float radius = ball.getRadius();	
@@ -271,10 +260,13 @@ bool updateGame(sf::RenderWindow& window, sf::Clock& clock)
 		{
 			forceVector[1] = std::abs(forceVector[1]) * -1.f;
 
+			//Influence direction of ball bounce based on the direction the player is moving
 			float playerXDisp = player.GetXDisplacement();
 
 			float randomAngle = static_cast<float>(rand() / static_cast<float>(RAND_MAX))* PLAYER_BALL_BOUNCE_ANGLE_MAX;
 
+
+			//Check to make sure that player is moving to prevent divide by 0
 			if (playerXDisp == 0)
 			{
 				forceVector[0] = forceVector[1] * std::tan(randomAngle * PI / 180.f);
@@ -299,7 +291,7 @@ bool updateGame(sf::RenderWindow& window, sf::Clock& clock)
 		
 		
 
-		speedModifier += speedIncreasePerHit; //Increase ball speed
+		speedModifier += speedIncreasePerHit; //Increase ball speed with contact from player
 
 		
 	}
@@ -360,6 +352,7 @@ void MovePlayer(sf::RenderWindow& window)
 {
 	playerNewPos = window.mapPixelToCoords(sf::Vector2i(sf::Mouse::getPosition(window).x, PLAYER_HEIGHT_POS));
 
+	//Edge cases to make sure block doesn't go off edge of screen
 	if (playerNewPos.x - player.GetWidth() / 2.f < 0)
 	{
 		playerNewPos.x = player.GetWidth() / 2.f;
@@ -382,6 +375,7 @@ void MovePlayer(sf::RenderWindow& window)
 
 int main()
 {
+	//Set window size based on break block sizes and spaces
 	WINDOW_STANDARD_WIDTH = (BREAK_BLOCK_WIDTH * (WIDTH_LINE_COUNT - 1)) + WIDTH_LINE_COUNT;
 	BREAK_ZONE_MAX_HEIGHT = (BREAK_BLOCK_HEIGHT * (HEIGHT_LINE_COUNT - 1)) + HEIGHT_LINE_COUNT;
 

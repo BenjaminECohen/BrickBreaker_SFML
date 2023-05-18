@@ -42,7 +42,7 @@ public:
 
 	void Interaction(float scoreMultiplier);
 
-	virtual int specialReturn();
+	
 
 
 };

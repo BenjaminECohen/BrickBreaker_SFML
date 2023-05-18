@@ -37,7 +37,6 @@ public:
 	void SetMode(Mode newMode);
 
 
-	int specialReturn();
 
 
 private:

@@ -99,7 +99,3 @@ void PlayerBlock::SetMode(PlayerBlock::Mode newMode)
 	}
 }
 
-int PlayerBlock::specialReturn()
-{
-	return 1;
-}

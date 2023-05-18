@@ -151,8 +151,5 @@ void Block::Interaction(float scoreMultiplier)
 	ReColor();
 };
 
-int Block::specialReturn()
-{
-	return 0;
-}
+
 
