@@ -188,8 +188,6 @@ void ResetBall()
 	speedModifier = 1.f;
 	ball.setPosition(WINDOW_STANDARD_WIDTH / 2.f, WINDOW_STANDARD_HEIGHT / 2.f);
 
-	//ADDME: Decrease Player Lives
-
 	//Thread a wait time for the ball to resume movement
 	std::thread ballReset(ThreadWaitBallReset);
 	ballReset.detach();
@@ -209,13 +207,7 @@ float lineDistance(float player, float obstacle, bool absoluteValue)
 
 bool updateGame(sf::RenderWindow& window, sf::Clock& clock)
 {
-	float radius = ball.getRadius();
-
-
-	//FIXME
-	//std::cout << "New Position" << ball.getPosition().x << ", " << ball.getPosition().y << std::endl;
-
-	
+	float radius = ball.getRadius();	
 
 	//Check if ball is out of bounds
 	if (ball.getPosition().x + radius >= WINDOW_STANDARD_WIDTH) //Ball has gone too far right
@@ -238,7 +230,7 @@ bool updateGame(sf::RenderWindow& window, sf::Clock& clock)
 			ResetBall();
 		}
 		
-		//forceVector[1] = std::abs(forceVector[1]) * -1.f;
+		
 	}
 	else if(ball.getPosition().y - radius <= 0) //Ball has gone too far up
 	{
@@ -335,29 +327,6 @@ bool updateGame(sf::RenderWindow& window, sf::Clock& clock)
 
 }
 
-/*
-void resizeWindow(sf::RenderWindow& window)
-{
-	std::cout << "Gameplay: Window Resized" << std::endl;
-
-
-	windowCurrSize = window.getSize().y;
-	if (windowCurrSize < WINDOW_STANDARD_SIZE)
-	{
-		windowCurrSize = WINDOW_STANDARD_SIZE;
-	}
-	//Resize the window to always be a perfect square, justified to the y size
-	sf::Vector2u newSize(windowCurrSize, windowCurrSize);
-	window.setSize(newSize);
-
-	//Get new scale of screen compared to original value
-	windowScale = 1.f + (windowCurrSize - WINDOW_STANDARD_SIZE) / WINDOW_STANDARD_SIZE;
-	std::cout << "Window Scale is now: " << windowScale * 100 << "%" << std::endl;
-
-
-
-}*/
-
 #pragma endregion
 
 
@@ -425,7 +394,7 @@ int main()
 	srand(std::time(0));
 
 	sf::Clock clock;
-	//std::thread timedFunc(timeSurprise, 5.f);
+
 	sf::FloatRect textRect;
 
 	sf::Font font1;
